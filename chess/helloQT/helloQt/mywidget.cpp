@@ -22,7 +22,7 @@ void myWidget::paintEvent(QPaintEvent * )
     painter.drawEllipse(QPoint(300,400), 50, 60);
 }
 
-void myWidget::mousePressEvent(QMouseEvent *)
+void myWidget::mousePressEvent(QMouseEvent *event)
 {
 
 }
