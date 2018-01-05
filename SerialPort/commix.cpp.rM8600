@@ -1,0 +1,432 @@
+#include "commix.h"
+#include "lfilesystem.h"
+#include "ldataconverter.h"
+#include "lcombobox.h"
+#include "iconhelper.h"
+#include "myhelper.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QMenuBar>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QPicture>
+#include <QDesktopWidget>
+#include <QSpacerItem>
+#include <QGraphicsDropShadowEffect>
+#include <QGroupBox>
+#include <QFormLayout>
+#include <QGridLayout>
+#include <QSerialPortInfo>
+#include <QTextEdit>
+
+/*************************************LSkinLabel********************************************************/
+
+class LSkinLabel : public QLabel
+{
+    Q_OBJECT
+public:
+    explicit LSkinLabel(QWidget *parent = 0):QLabel(parent),m_checkLabel(0),m_ischeck(false),m_isMousePress(false)
+    {
+        initLayout();
+
+    }
+    void setChecked(bool isChecked);
+signals:
+    void clicked(const QString &iStyle);
+    void leaveEvent();
+public slots:
+    void doSkinChecked();
+protected slots:
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
+private:
+    QLabel *m_checkLabel;
+    bool m_ischeck;
+    bool m_isMousePress;
+
+    void initLayout();
+};
+
+void LSkinLabel::doSkinChecked()
+{
+    if(m_ischeck)
+        return;
+    else
+        m_ischeck = true;
+    m_checkLabel->setVisible(true);
+}
+
+void LSkinLabel::enterEvent(QEvent *event)
+{
+    Q_UNUSED(event)
+    if(m_ischeck)
+        return;
+    myHelper::SetStyle(this->objectName().replace("Skin",""));
+    m_checkLabel->setVisible(true);
+}
+
+void LSkinLabel::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+        m_isMousePress = true;
+}
+
+void LSkinLabel::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event)
+    if(m_isMousePress)
+        emit clicked(this->objectName());
+    m_isMousePress = false;
+}
+
+void LSkinLabel::setChecked(bool isChecked)
+{
+    m_ischeck = isChecked;
+    if(m_ischeck)
+        m_checkLabel->setVisible(true);
+    else
+        m_checkLabel->setVisible(false);
+}
+
+void LSkinLabel::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event)
+    if(m_ischeck)
+        return;
+    m_checkLabel->setVisible(false);
+    emit leaveEvent();
+}
+
+void LSkinLabel::initLayout()
+{
+    QGraphicsDropShadowEffect *shadow_effect = new QGraphicsDropShadowEffect(this);
+    shadow_effect->setOffset(-5, 5);
+    shadow_effect->setColor(Qt::gray);
+    shadow_effect->setBlurRadius(8);
+    this->setGraphicsEffect(shadow_effect);
+
+    QSpacerItem *vspacer = new QSpacerItem(20,20,QSizePolicy::Fixed,QSizePolicy::Expanding);
+    QSpacerItem *hspaver = new QSpacerItem(20,20,QSizePolicy::Expanding,QSizePolicy::Fixed);
+    m_checkLabel = new QLabel(this);
+    m_checkLabel->setVisible(false);
+    connect(this,SIGNAL(clicked(QString)),this,SLOT(doSkinChecked()));
+    QIcon c(":/image/image/right.png");
+    IconHelper::Instance()->SetIcon(m_checkLabel,c,QSize(15,15));
+    QHBoxLayout *hbox = new QHBoxLayout();
+    hbox->addSpacerItem(hspaver);
+    hbox->addWidget(m_checkLabel);
+    QVBoxLayout *vbox = new QVBoxLayout(this);
+    vbox->addSpacerItem(vspacer);
+    vbox->addLayout(hbox);
+    this->setLayout(vbox);
+}
+
+/**************************LSkinDialog***************************************************/
+class LSkinDialog : public LBaseDialog
+{
+    Q_OBJECT
+public :
+    explicit LSkinDialog(QWidget *parent = 0);
+
+public  slots:
+    void loadStyle();
+    void styleChanged(const QString &iStyle);
+
+protected slots:
+    void leaveEvent(QEvent *event);
+
+private:
+    void initLayout();
+    QWidget *m_widget_title;
+    QString m_currentSkin;
+    QMap<QString,QMap<LSkinLabel*,bool> > m_skinLabelMap;
+};
+
+LSkinDialog::LSkinDialog(QWidget *parent ):LBaseDialog(parent),m_widget_title(0),m_currentSkin("blueSkin")
+{
+    initLayout();
+
+    QMap<LSkinLabel *,bool> map_ = m_skinLabelMap.value(m_currentSkin);
+    map_.insert(map_.keys().at(0),true);
+    m_skinLabelMap.insert(m_currentSkin,map_);
+}
+
+void LSkinDialog::initLayout()
+{
+    setMoveAble(false);
+    this->setFixedSize(200,150);
+    this->setObjectName("skinDialog");
+    m_widget_title = new QWidget(this);
+    m_widget_title->setObjectName("skin_title");
+    m_widget_title->setGeometry(0,0,this->geometry().width(),30);
+    createTitleBar(m_widget_title,ToolTitle,"更换皮肤");
+
+    LSkinLabel *blackSkin = new LSkinLabel(this);
+    blackSkin->setObjectName("blackSkin");
+    connect(blackSkin,SIGNAL(leaveEvent()),this,SLOT(loadStyle()));
+    connect(blackSkin,SIGNAL(clicked(QString)),this,SLOT(styleChanged(QString)));
+
+    LSkinLabel *blueSkin = new LSkinLabel(this);
+    blueSkin->setObjectName("blueSkin");
+    connect(blueSkin,SIGNAL(leaveEvent()),this,SLOT(loadStyle()));
+    connect(blueSkin,SIGNAL(clicked(QString)),this,SLOT(styleChanged(QString)));
+
+    LSkinLabel *graySkin = new LSkinLabel(this);
+    graySkin->setObjectName("graySkin");
+    connect(graySkin,SIGNAL(leaveEvent()),this,SLOT(loadStyle()));
+    connect(graySkin,SIGNAL(clicked(QString)),this,SLOT(styleChanged(QString)));
+
+    LSkinLabel *navySkin = new LSkinLabel(this);
+    navySkin->setObjectName("navySkin");
+    connect(navySkin,SIGNAL(leaveEvent()),this,SLOT(loadStyle()));
+    connect(navySkin,SIGNAL(clicked(QString)),this,SLOT(styleChanged(QString)));
+
+    QMap<LSkinLabel *,bool> map;
+    map.insert(blackSkin,false);
+    m_skinLabelMap.insert("blackSkin",map);
+    map.clear();
+    map.insert(blueSkin,false);
+    m_skinLabelMap.insert("blueSkin",map);
+    map.clear();
+    map.insert(graySkin,false);
+    m_skinLabelMap.insert("graySkin",map);
+    map.clear();
+    map.insert(navySkin,false);
+    m_skinLabelMap.insert("navySkin",map);
+
+    QVBoxLayout *leftvbox = new QVBoxLayout();
+    leftvbox->addWidget(blackSkin);
+    leftvbox->addWidget(blueSkin);
+    QVBoxLayout *rightvbox = new QVBoxLayout();
+    rightvbox->addWidget(graySkin);
+    rightvbox->addWidget(navySkin);
+
+    QHBoxLayout *bottombox = new QHBoxLayout();
+    bottombox->addLayout(leftvbox);
+    bottombox->addLayout(rightvbox);
+
+    QVBoxLayout *mainbox = new QVBoxLayout(this);
+    mainbox->addWidget(m_widget_title);
+
+    mainbox->addLayout(bottombox);
+    mainbox->setContentsMargins(0,0,0,0);
+    this->setLayout(mainbox);
+
+}
+
+void LSkinDialog::loadStyle()
+{
+    QString ss = m_currentSkin;
+    myHelper::SetStyle(ss.replace("Skin",""));
+}
+
+void LSkinDialog::styleChanged(const QString& iStyle)
+{
+    if(m_currentSkin != iStyle && !m_currentSkin.isEmpty())
+    {
+        LSkinLabel * skinLabel = m_skinLabelMap.value(m_currentSkin).keys().at(0);
+        skinLabel->setChecked(false);
+        QMap<LSkinLabel *,bool> map;
+        map.insert(skinLabel,false);
+        m_skinLabelMap.insert(m_currentSkin,map);
+
+        m_currentSkin = iStyle;
+        skinLabel = m_skinLabelMap.value(m_currentSkin).keys().at(0);
+        skinLabel->setChecked(true);
+        map.clear();
+        map.insert(skinLabel,true);
+        m_skinLabelMap.insert(m_currentSkin,map);
+        loadStyle();
+    }
+
+}
+
+void LSkinDialog::leaveEvent(QEvent *event)
+{
+    Q_UNUSED(event)
+    this->hide();
+}
+
+
+/**************************CommixPrivate*************************************/
+class CommixPrivate : public QObject
+{
+    Q_OBJECT
+public:
+    explicit CommixPrivate(Commix *parent):QObject(parent),dd(parent),m_widgetTitle(0),m_skinDialog(0),
+        m_openButton(0),m_isOpen(false)
+    {
+    }
+
+    void formInCenter(QWidget *frm);
+    QVariantList portList();
+
+    Commix * const dd;
+    QWidget *m_widgetTitle;
+    QPoint m_mousePoint;
+    LSkinDialog *m_skinDialog;
+    QPushButton *m_openButton;
+    bool m_isOpen;
+
+};
+
+void CommixPrivate::formInCenter(QWidget *frm)
+{
+    int frmX = frm->width();
+    int frmY = frm->height();
+    QDesktopWidget w;
+    int deskWidth = w.width();
+    int deskHeight = w.height();
+    QPoint movePoint(deskWidth / 2 - frmX / 2, deskHeight / 2 - frmY / 2);
+    frm->move(movePoint);
+}
+
+QVariantList CommixPrivate::portList()
+{
+    QVariantList list;
+    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
+    {
+        QVariantMap map;
+        map.insert("name",info.portName().toLower());
+        map.insert("text",info.portName().toUpper());
+        list << map;
+        //        qDebug() << "Name : " << info.portName();
+        //        qDebug() << "Description : " << info.description();
+        //        qDebug() << "Manufacturer: " << info.manufacturer();
+        //        qDebug() << "Serial Number: " << info.serialNumber();
+        //        qDebug() << "System Location: " << info.systemLocation();
+    }
+    return list;
+}
+
+/*****************************Commix***********************************************/
+#include "commix.moc"
+
+Commix::Commix(QWidget *parent) :
+    LBaseDialog(parent),dp(new CommixPrivate(this))
+{
+    initLayout();
+    dp->m_skinDialog = new LSkinDialog(this);
+    dp->m_skinDialog->hide();
+    resize(622, 496);
+}
+
+void Commix::initLayout()
+{
+    this->setObjectName("Commix");
+
+
+    QVBoxLayout *vbox = new QVBoxLayout();
+
+    dp->m_widgetTitle = new QWidget(this);
+    dp->m_widgetTitle->setGeometry(0,0,this->geometry().width(),30);
+    dp->m_widgetTitle->setObjectName("widget_title");
+    createTitleBar(dp->m_widgetTitle,ToolClose | ToolIcon | ToolMax | ToolMin |ToolSet | ToolSkin | ToolTitle,"Commix演示");
+    //QSpacerItem *vSpacer = new QSpacerItem(20,20,QSizePolicy::Minimum,QSizePolicy::Expanding);
+
+    QGridLayout *settingLayout = new QGridLayout();
+    QHBoxLayout *hbox = new QHBoxLayout();
+
+    QFormLayout *portformLayout = new QFormLayout;
+    QGroupBox *settingGroup = new QGroupBox();
+    LComboBox *portCombox = new LComboBox();
+    portCombox->setBoxItems(dp->portList());
+    portformLayout->addRow(tr("端口:"), portCombox);
+
+    QFormLayout *baudRateformLayout = new QFormLayout;
+    LComboBox *baudRateCombox = new LComboBox();
+    baudRateCombox->setBoxItems(dp->portList());
+    baudRateformLayout->addRow(tr("波特率:"), baudRateCombox);
+
+    QFormLayout *parityformLayout = new QFormLayout;
+    LComboBox *parityCombox = new LComboBox();
+    parityCombox->setBoxItems(dp->portList());
+    parityformLayout->addRow(tr("校验位:"), parityCombox);
+
+    QFormLayout *dataformLayout = new QFormLayout;
+    LComboBox *dataCombox = new LComboBox();
+    dataCombox->setBoxItems(dp->portList());
+    dataformLayout->addRow(tr("数据位:"), dataCombox);
+
+    QFormLayout *stopformLayout = new QFormLayout;
+    LComboBox *stopCombox = new LComboBox();
+    stopCombox->setBoxItems(dp->portList());
+    stopformLayout->addRow(tr("停止位:"), stopCombox);
+
+    QFormLayout *controlformLayout = new QFormLayout;
+    LComboBox *controlCombox = new LComboBox();
+    controlCombox->setBoxItems(dp->portList());
+    controlformLayout->addRow(tr("流控制:"), controlCombox);
+
+    QFormLayout *configformLayout = new QFormLayout;
+    QTextEdit *configEdit = new QTextEdit();
+    //controlCombox->setBoxItems(dp->portList());
+    configformLayout->addRow(tr("\n\n\n\n选项:"), configEdit);
+    dp->m_openButton = new QPushButton(this);
+    dp->m_openButton->setText("打开串口");
+    connect(dp->m_openButton,SIGNAL(clicked()),this,SLOT(doOpen()));
+
+    settingLayout->addLayout(portformLayout,0,0,1,1);
+    settingLayout->addLayout(baudRateformLayout,0,1,1,1);
+    settingLayout->addLayout(dataformLayout,1,0,1,1);
+    settingLayout->addLayout(parityformLayout,1,1,1,1);
+    settingLayout->addLayout(stopformLayout,2,0,1,1);
+    settingLayout->addLayout(controlformLayout,2,1,1,1);
+    settingLayout->addLayout(configformLayout,3,0,2,2);
+    settingLayout->addWidget(dp->m_openButton,4,0,1,2);
+    settingLayout->setContentsMargins(5,20,5,5);
+
+    settingGroup->setTitle("通信设置");
+    settingGroup->setLayout(settingLayout);
+    hbox->addWidget(settingGroup);
+    hbox->setContentsMargins(5,5,5,5);
+
+    vbox->addWidget(dp->m_widgetTitle);
+    vbox->addLayout(hbox);
+    this->setLayout(vbox);
+    vbox->setContentsMargins(0,0,0,5);
+    dp->m_widgetTitle->installEventFilter(this);
+
+    dp->formInCenter(this);
+
+}
+
+bool Commix::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonDblClick) {
+        this->doToolButtonMax();
+        return true;
+    }
+    return QObject::eventFilter(obj, event);
+}
+
+void Commix::resizeEvent(QResizeEvent *event)
+{
+    Q_UNUSED(event)
+    dp->m_widgetTitle->setGeometry(0,0,this->geometry().width(),30);
+}
+
+void Commix::doToolButtonSkin()
+{
+
+    dp->m_skinDialog->move(this->geometry().width()-250,30);
+    dp->m_skinDialog->show();
+}
+
+void Commix::doOpen()
+{
+    if(dp->m_isOpen)
+    {
+        dp->m_openButton->setText("打开串口");
+        dp->m_openButton->setEnabled(true);
+    }else{
+        dp->m_openButton->setText("关闭串口");
+        dp->m_openButton->setEnabled(false);
+    }
+    dp->m_isOpen = !dp->m_isOpen;
+}
+

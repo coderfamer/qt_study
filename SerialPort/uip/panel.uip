@@ -1,0 +1,25 @@
+{
+    name : 'formLayout',
+    type : 'FormLayout',
+    property : {contentsMargins: [10, 5, 5, 10]},
+    child : [
+        {
+            name : 'portName',
+            type : 'ComboBox',
+            property : {boxItems : portList()},
+            pack : {label : wl('flag')},
+        },
+        {
+            name : 'addr',
+            type : 'LineEdit',
+            property : {textTrimed : true},
+            pack : {label : wl('addr')},
+        },
+        {
+            name : 'description',
+            type : 'LineEdit',
+            property : {textTrimed : true},
+            pack : {label : wl('description')},
+        }
+    ]
+}
