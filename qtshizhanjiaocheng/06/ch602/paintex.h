@@ -47,6 +47,18 @@ private:
     QPushButton *BrushColorBtn;
 
     QGridLayout *rightLayout;
+
+protected slots:
+    void ShowShape(int);
+    void ShowPenColor();
+    void ShowPenWidth(int);
+    void ShowPenStyle(int);
+    void ShowPenCap(int);
+    void ShowPenJoin(int);
+    void ShowFillRule();
+    void ShowSpreadStyle();
+    void ShowBrushColor();
+    void ShowBrush(int);
 };
 
 #endif // PAINTEX_H

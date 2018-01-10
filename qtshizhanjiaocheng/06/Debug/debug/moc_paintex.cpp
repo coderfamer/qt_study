@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_PaintEx_t {
-    QByteArrayData data[1];
-    char stringdata0[8];
+    QByteArrayData data[12];
+    char stringdata0[135];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -31,10 +31,24 @@ struct qt_meta_stringdata_PaintEx_t {
     )
 static const qt_meta_stringdata_PaintEx_t qt_meta_stringdata_PaintEx = {
     {
-QT_MOC_LITERAL(0, 0, 7) // "PaintEx"
+QT_MOC_LITERAL(0, 0, 7), // "PaintEx"
+QT_MOC_LITERAL(1, 8, 9), // "ShowShape"
+QT_MOC_LITERAL(2, 18, 0), // ""
+QT_MOC_LITERAL(3, 19, 12), // "ShowPenColor"
+QT_MOC_LITERAL(4, 32, 12), // "ShowPenWidth"
+QT_MOC_LITERAL(5, 45, 12), // "ShowPenStyle"
+QT_MOC_LITERAL(6, 58, 10), // "ShowPenCap"
+QT_MOC_LITERAL(7, 69, 11), // "ShowPenJoin"
+QT_MOC_LITERAL(8, 81, 12), // "ShowFillRule"
+QT_MOC_LITERAL(9, 94, 15), // "ShowSpreadStyle"
+QT_MOC_LITERAL(10, 110, 14), // "ShowBrushColor"
+QT_MOC_LITERAL(11, 125, 9) // "ShowBrush"
 
     },
-    "PaintEx"
+    "PaintEx\0ShowShape\0\0ShowPenColor\0"
+    "ShowPenWidth\0ShowPenStyle\0ShowPenCap\0"
+    "ShowPenJoin\0ShowFillRule\0ShowSpreadStyle\0"
+    "ShowBrushColor\0ShowBrush"
 };
 #undef QT_MOC_LITERAL
 
@@ -44,22 +58,59 @@ static const uint qt_meta_data_PaintEx[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       0,    0, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        0,       // signalCount
 
+ // slots: name, argc, parameters, tag, flags
+       1,    1,   64,    2, 0x09 /* Protected */,
+       3,    0,   67,    2, 0x09 /* Protected */,
+       4,    1,   68,    2, 0x09 /* Protected */,
+       5,    1,   71,    2, 0x09 /* Protected */,
+       6,    1,   74,    2, 0x09 /* Protected */,
+       7,    1,   77,    2, 0x09 /* Protected */,
+       8,    0,   80,    2, 0x09 /* Protected */,
+       9,    0,   81,    2, 0x09 /* Protected */,
+      10,    0,   82,    2, 0x09 /* Protected */,
+      11,    1,   83,    2, 0x09 /* Protected */,
+
+ // slots: parameters
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    2,
+
        0        // eod
 };
 
 void PaintEx::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
-    Q_UNUSED(_o);
-    Q_UNUSED(_id);
-    Q_UNUSED(_c);
-    Q_UNUSED(_a);
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        PaintEx *_t = static_cast<PaintEx *>(_o);
+        Q_UNUSED(_t)
+        switch (_id) {
+        case 0: _t->ShowShape((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 1: _t->ShowPenColor(); break;
+        case 2: _t->ShowPenWidth((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 3: _t->ShowPenStyle((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 4: _t->ShowPenCap((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 5: _t->ShowPenJoin((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 6: _t->ShowFillRule(); break;
+        case 7: _t->ShowSpreadStyle(); break;
+        case 8: _t->ShowBrushColor(); break;
+        case 9: _t->ShowBrush((*reinterpret_cast< int(*)>(_a[1]))); break;
+        default: ;
+        }
+    }
 }
 
 const QMetaObject PaintEx::staticMetaObject = {
@@ -86,6 +137,15 @@ int PaintEx::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     _id = QWidget::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
+    if (_c == QMetaObject::InvokeMetaMethod) {
+        if (_id < 10)
+            qt_static_metacall(this, _c, _id, _a);
+        _id -= 10;
+    } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
+        if (_id < 10)
+            *reinterpret_cast<int*>(_a[0]) = -1;
+        _id -= 10;
+    }
     return _id;
 }
 QT_WARNING_POP

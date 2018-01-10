@@ -22,6 +22,7 @@ public:
 signals:
 
 public slots:
+private:
     Shape shape;
     QPen pen;
     QBrush brush;
