@@ -23,12 +23,14 @@ private:
     QLabel *PortLabel;
     QLineEdit *PortLineEdit;
     QPushButton *CreatBtn;
+    QPushButton *closeBtn;
     QGridLayout *mainLayout;
 private:
     int port;
     Server *server;
 public slots:
     void slotCreateServer();
+    void slotCloseServer();
     void updateServer(QString, int);
 };
 
