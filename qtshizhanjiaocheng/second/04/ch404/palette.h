@@ -21,6 +21,14 @@ public:
 
     void createLeftFrame();
     void createRgithFrame();
+    void fillColorList(QComboBox *combobox);
+
+private slots:
+    void showWindow();
+    void showWindowText();
+    void showButton();
+    void showButtonText();
+    void showBase();
 
 private:
     //left

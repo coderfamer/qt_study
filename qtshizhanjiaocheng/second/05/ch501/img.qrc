@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/about.png</file>
+        <file>images/blod.png</file>
+        <file>images/butterfly.png</file>
+        <file>images/color.png</file>
+        <file>images/copy.png</file>
+        <file>images/cut.png</file>
+        <file>images/exit.png</file>
+        <file>images/horizontal-mirror.png</file>
+        <file>images/italic.png</file>
+        <file>images/new.png</file>
+        <file>images/open.png</file>
+        <file>images/paste.png</file>
+        <file>images/print_image.png</file>
+        <file>images/print_text.png</file>
+        <file>images/redo.png</file>
+        <file>images/rotate90.png</file>
+        <file>images/rotate180.png</file>
+        <file>images/rotate270.png</file>
+        <file>images/underline.png</file>
+        <file>images/undo.png</file>
+        <file>images/vertical-mirror.png</file>
+        <file>images/zoom_out.png</file>
+        <file>images/zoom-in.png</file>
+        <file>images/justify.png</file>
+        <file>images/center.png</file>
+        <file>images/left-justify.png</file>
+        <file>images/right-justify.png</file>
+    </qresource>
+</RCC>
