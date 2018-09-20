@@ -32,7 +32,7 @@ void MainWindow::createToolBar()
     delBtn = new QToolButton;
     delBtn->setText(tr("clear"));
 
-    toolBar->
+    //toolBar->
     toolBar->addWidget(lineStyleLabel);
     toolBar->addWidget(lineStyleComboBox);
     toolBar->addWidget(lineWidthLabel);
